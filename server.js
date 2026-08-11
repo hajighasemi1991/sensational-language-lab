@@ -43,50 +43,84 @@ function mimeFor(filename, fallback = 'application/octet-stream') {
 }
 
 function menuPrompt() {
-  return `You are a food-menu rewriting assistant applying a research-defined form of sensational language.
+  return `You rewrite restaurant-menu ingredient descriptions using the exact style of a research manipulation of sensational language.
 
-DEFINITION
-Sensational language is dramatic, emotionally evocative, affective-evaluative wording that frames food as a pleasurable, indulgent experience rather than as a neutral list of attributes or ingredients. It is distinct from merely descriptive, sensory, or vivid language. Do not treat added sensory detail by itself as the goal.
+CORE STYLE
+Sensational language uses drama, intensity, emotional impact, and enjoyment-oriented wording while preserving the same underlying ingredients. The result should sound like a polished restaurant-menu description: compact, fluent, appetizing, and natural. It should NOT sound like an essay, ad campaign, poem, or ingredient-by-ingredient dictionary.
 
-REFERENCE EXAMPLE
+REFERENCE EXAMPLES
 Neutral: "Spaghetti, tomato sauce, garlic, basil, parmesan."
 Sensational: "Golden spaghetti twirls through a rich tomato embrace, garlic sparks the flavor, basil adds a fresh lift, and parmesan crowns it with irresistible delight."
 
-TASK
-- The input is a menu that includes ingredient lists or ingredient descriptions.
+Neutral: "Lettuce, cherry tomatoes, cucumber, olives, feta cheese."
+Sensational: "Crisp lettuce bursts with freshness, juicy cherry tomatoes sparkle with flavor, cool cucumber and briny olives add zest, and creamy feta crowns the salad with irresistible delight."
+
+STYLE RULES
+- Write one cohesive, flowing restaurant-menu description for each food item.
+- Prefer one sentence per item; use two short sentences only when needed for a long ingredient list.
+- Keep the wording reasonably concise and similar in length and cadence to the reference examples.
+- Use emotionally charged verbs and adjectives, pleasurable framing, and tasteful dramatic language.
+- Do NOT write constructions such as "butter — a velvet richness; chicken — a succulent centerpiece".
+- NEVER use an em dash (—) or en dash (–) to attach commentary to individual ingredients.
+- Do NOT turn each ingredient into a separate mini-description.
+- Do NOT add a lead-in such as "a scintillating lineup" or "these ingredients create".
+- Do NOT make the prose excessively ornate, abstract, theatrical, or literary.
+- Do NOT explain the rewrite.
+
+MENU-SEPARATION RULES
+- Detect every distinct food/menu item in the input.
+- Rewrite EACH food item separately.
+- Never combine ingredients from different dishes into one description.
+- Preserve the original order of menu items.
+- Keep each food item and its rewritten description as a separate line or paragraph, with a blank line between distinct items when helpful.
+- If item names, headings, prices, quantities, dietary markers, or labels are present, keep them unchanged and associate each rewritten description only with its own item.
+
+CONTENT-PRESERVATION RULES
 - Return the FULL menu text.
-- Rewrite ONLY the ingredient lists and ingredient-description portions using sensational language as defined above.
-- Keep everything else the same: item names, section headings, prices, quantities, dietary markers, labels, ordering, and all other non-ingredient text.
-- Preserve the underlying dish and every stated ingredient.
-- Do not add, remove, replace, or invent ingredients.
-- Do not invent factual claims such as fresh, local, organic, handmade, premium, award-winning, healthy, authentic, imported, aged, or rare unless the source explicitly states them.
-- Use dramatic and emotionally evocative phrasing where natural, including affective evaluation, metaphor, personification, or experiential framing.
-- Do not simply turn the text into a sensory description.
-- Correct grammar and punctuation within the rewritten ingredient text when appropriate.
+- Rewrite only ingredient lists and ingredient-description portions.
+- Preserve every stated ingredient and the underlying dish.
+- Do not add, remove, substitute, or invent ingredients.
+- Do not invent factual claims such as local, organic, handmade, premium, award-winning, healthy, authentic, imported, aged, or rare unless explicitly stated.
+- Sensational adjectives or experiential phrasing are allowed when they do not introduce a new factual claim.
+- Correct obvious grammar, spelling, capitalization, and punctuation where appropriate.
 - Preserve the original language of the menu.
-- Do not explain your changes. Return only the transformed menu in the structured output field.`;
+
+Return only the transformed menu in the structured output field.`;
 }
 
 function productPrompt() {
-  return `You are a food-language rewriting assistant applying a research-defined form of sensational language.
+  return `You rewrite text for ONE food product using the exact style of a research manipulation of sensational language.
 
-DEFINITION
-Sensational language is dramatic, emotionally evocative, affective-evaluative wording that frames food as a pleasurable, indulgent experience rather than as a neutral list of attributes or ingredients. It is distinct from merely descriptive, sensory, or vivid language. Do not treat added sensory detail by itself as the goal.
+CORE STYLE
+Sensational language uses drama, intensity, emotional impact, and enjoyment-oriented wording while preserving the same underlying food and ingredients. The result should sound like a polished restaurant-menu description: compact, fluent, appetizing, and natural.
 
-REFERENCE EXAMPLE
+REFERENCE EXAMPLES
 Neutral: "Spaghetti, tomato sauce, garlic, basil, parmesan."
 Sensational: "Golden spaghetti twirls through a rich tomato embrace, garlic sparks the flavor, basil adds a fresh lift, and parmesan crowns it with irresistible delight."
 
-TASK
-- Rewrite the full supplied text for ONE food product using sensational language as defined above.
-- Preserve the underlying product, all ingredients, and all factual information.
-- Do not add, remove, replace, or invent ingredients.
-- Do not invent factual claims such as fresh, local, organic, handmade, premium, award-winning, healthy, authentic, imported, aged, or rare unless the source explicitly states them.
-- Use dramatic and emotionally evocative phrasing where natural, including affective evaluation, metaphor, personification, or experiential framing.
-- Do not simply turn the text into a sensory description.
-- Correct grammar and punctuation when appropriate.
+Neutral: "Lettuce, cherry tomatoes, cucumber, olives, feta cheese."
+Sensational: "Crisp lettuce bursts with freshness, juicy cherry tomatoes sparkle with flavor, cool cucumber and briny olives add zest, and creamy feta crowns the salad with irresistible delight."
+
+STYLE RULES
+- Produce one cohesive, flowing description, normally one sentence.
+- Keep it reasonably concise and similar in length and cadence to the reference examples.
+- Use emotionally charged verbs and adjectives, pleasurable framing, and tasteful dramatic language.
+- Do NOT write constructions such as "butter — a velvet richness; chicken — a succulent centerpiece".
+- NEVER use an em dash (—) or en dash (–) to attach commentary to ingredients.
+- Do NOT describe each ingredient separately as a list of mini-definitions.
+- Do NOT add a lead-in such as "a scintillating lineup" or "these ingredients create".
+- Do NOT make the prose excessively ornate, abstract, theatrical, or literary.
+- Do NOT explain the rewrite.
+
+CONTENT-PRESERVATION RULES
+- Preserve the underlying product, all stated ingredients, and all factual information.
+- Do not add, remove, substitute, or invent ingredients.
+- Do not invent factual claims such as local, organic, handmade, premium, award-winning, healthy, authentic, imported, aged, or rare unless explicitly stated.
+- Sensational adjectives or experiential phrasing are allowed when they do not introduce a new factual claim.
+- Correct obvious grammar, spelling, capitalization, and punctuation where appropriate.
 - Preserve the original language.
-- Do not explain your changes. Return only the rewritten text in the structured output field.`;
+
+Return only the rewritten text in the structured output field.`;
 }
 
 async function callOpenAI({ mode, text, file }) {
