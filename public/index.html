@@ -69,8 +69,12 @@
       <div class="panel-wrap small">
         <button class="back-button" type="button" data-back>← Back</button>
         <h1>One food product</h1>
-        <p class="lead">Paste the product text below.</p>
+        <p class="lead">Enter the food name and paste the product text below.</p>
         <form id="productForm" class="panel">
+          <label class="field-label" for="productFoodName">Food name</label>
+          <textarea class="name-input" id="productFoodName" placeholder="Spaghetti"></textarea>
+          <p class="field-note">Required.</p>
+
           <label class="field-label" for="productText">Food product text</label>
           <textarea id="productText" placeholder="Spaghetti, tomato sauce, garlic, basil, parmesan."></textarea>
           <p class="form-error hidden" id="productError"></p>
