@@ -105,6 +105,7 @@ Neutral: "Lettuce, cherry tomatoes, cucumber, olives, feta cheese."
 Sensational: "Crisp lettuce bursts with freshness, juicy cherry tomatoes sparkle with flavor, cool cucumber and briny olives add zest, and creamy feta crowns the salad with irresistible delight."
 
 STYLE RULES
+- The user separately provides the FOOD NAME. Use that food name exactly as provided.
 - Produce one cohesive, flowing description, normally one sentence.
 - Keep it reasonably concise and similar in length and cadence to the reference examples.
 - Use emotionally charged verbs and adjectives, pleasurable framing, and tasteful dramatic language.
@@ -122,11 +123,12 @@ CONTENT-PRESERVATION RULES
 - Sensational adjectives or experiential phrasing are allowed when they do not introduce a new factual claim.
 - Correct obvious grammar, spelling, capitalization, and punctuation where appropriate.
 - Preserve the original language.
+- Output the exact food name on the first line and the sensationalized description on the next line.
 
-Return only the rewritten text in the structured output field.`;
+Return only the rewritten food name and description in the structured output field.`;
 }
 
-async function callOpenAI({ mode, text, file, foodNames }) {
+async function callOpenAI({ mode, text, file, foodNames, foodName }) {
   if (!process.env.OPENAI_API_KEY) {
     const err = new Error('OPENAI_API_KEY is missing from the server environment.');
     err.status = 500;
@@ -141,6 +143,9 @@ async function callOpenAI({ mode, text, file, foodNames }) {
   }
   if (mode === 'menu' && foodNames && foodNames.trim()) {
     content.push({ type: 'input_text', text: `FOOD NAME(S), ONE PER LINE IN MENU ORDER:\n${foodNames.trim()}` });
+  }
+  if (mode === 'product' && foodName && foodName.trim()) {
+    content.push({ type: 'input_text', text: `FOOD NAME:\n${foodName.trim()}` });
   }
   if (text && text.trim()) content.push({ type: 'input_text', text: `USER CONTENT:\n${text.trim()}` });
   if (!content.length) {
@@ -208,6 +213,7 @@ app.post('/api/rewrite', upload.single('file'), async (req, res, next) => {
     const mode = req.body.mode;
     const text = req.body.text || '';
     const foodNames = req.body.foodNames || '';
+    const foodName = req.body.foodName || '';
 
     if (!['menu', 'product'].includes(mode)) {
       const err = new Error('Please choose Menu or Food Product.');
@@ -224,13 +230,18 @@ app.post('/api/rewrite', upload.single('file'), async (req, res, next) => {
       err.status = 400;
       throw err;
     }
+    if (mode === 'product' && !foodName.trim()) {
+      const err = new Error('Please enter the food name.');
+      err.status = 400;
+      throw err;
+    }
     if (mode === 'product' && req.file) {
       const err = new Error('For one food product, please paste the text instead of uploading a file.');
       err.status = 400;
       throw err;
     }
 
-    const result = await callOpenAI({ mode, text, file: req.file, foodNames });
+    const result = await callOpenAI({ mode, text, file: req.file, foodNames, foodName });
     res.json(result);
   } catch (error) { next(error); }
 });
