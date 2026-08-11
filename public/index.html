@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sensational Language Lab</title>
+  <meta name="description" content="Rewrite menu ingredients and food product text using sensational language." />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <button class="brand" id="brandButton" type="button">Sensational Language Lab</button>
+    </header>
+    <section class="screen active" id="homeScreen">
+      <div class="home-wrap">
+        <h1>What do you have?</h1>
+        <div class="choices">
+          <article class="choice-card menu-card">
+            <h2>I have a menu</h2>
+            <p>Upload a menu or paste its text.</p>
+            <label class="check-row"><input id="ingredientCheck" type="checkbox" /><span>My menu includes a list of ingredients.</span><strong>Required</strong></label>
+            <button id="menuChoice" class="main-button" type="button" disabled>Continue</button>
+          </article>
+          <article class="choice-card">
+            <h2>I have one food product</h2>
+            <p>Paste the product text and make it sensational.</p>
+            <button id="productChoice" class="main-button" type="button">Continue</button>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="screen" id="menuScreen"><div class="panel-wrap"><button class="back-button" type="button" data-back>← Back</button><h1>Menu</h1><p class="lead">Upload your menu or paste the text below.</p><form id="menuForm" class="panel"><label class="upload-box" id="uploadBox"><input id="menuFile" type="file" accept=".pdf,.doc,.docx,.txt" /><span class="upload-title">Upload PDF or Word file</span><span class="upload-note">PDF, DOC, DOCX, or TXT · up to 20 MB</span></label><div id="fileName" class="file-name hidden"></div><div class="or"><span>or</span></div><label class="field-label" for="menuText">Paste menu text</label><textarea id="menuText" placeholder="Paste the menu here..."></textarea><p class="form-error hidden" id="menuError"></p><button class="submit-button" id="menuSubmit" type="submit">Sensationalize</button></form><section class="result-panel hidden" id="menuResult"><div class="result-head"><h2>Sensational version</h2><button class="copy-button" type="button" data-copy="menuOutput">Copy</button></div><div class="result-text" id="menuOutput"></div></section></div></section>
+    <section class="screen" id="productScreen"><div class="panel-wrap small"><button class="back-button" type="button" data-back>← Back</button><h1>One food product</h1><p class="lead">Paste the product text below.</p><form id="productForm" class="panel"><label class="field-label" for="productText">Food product text</label><textarea id="productText" placeholder="Spaghetti, tomato sauce, garlic, basil, parmesan."></textarea><p class="form-error hidden" id="productError"></p><button class="submit-button" id="productSubmit" type="submit">Sensationalize</button></form><section class="result-panel hidden" id="productResult"><div class="result-head"><h2>Sensational version</h2><button class="copy-button" type="button" data-copy="productOutput">Copy</button></div><div class="result-text" id="productOutput"></div></section></div></section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
