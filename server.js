@@ -68,15 +68,18 @@ STYLE RULES
 - Do NOT explain the rewrite.
 
 MENU-SEPARATION RULES
-- Detect every distinct food/menu item in the input.
+- The user separately provides FOOD NAME(S), one per line, in the same order as the menu items.
+- Use those food names exactly as provided.
+- Detect every distinct food/menu item in the input and pair each item with the corresponding food name by order.
 - Rewrite EACH food item separately.
 - Never combine ingredients from different dishes into one description.
 - Preserve the original order of menu items.
-- Keep each food item and its rewritten description as a separate line or paragraph, with a blank line between distinct items when helpful.
-- If item names, headings, prices, quantities, dietary markers, or labels are present, keep them unchanged and associate each rewritten description only with its own item.
+- Output each food name on its own line, followed by only that food's rewritten sensational description on the next line.
+- Put a blank line between different foods.
+- If prices, quantities, dietary markers, or labels are present, keep them unchanged with the correct food item.
 
 CONTENT-PRESERVATION RULES
-- Return the FULL menu text.
+- Return the FULL menu text organized by the provided food names.
 - Rewrite only ingredient lists and ingredient-description portions.
 - Preserve every stated ingredient and the underlying dish.
 - Do not add, remove, substitute, or invent ingredients.
@@ -123,7 +126,7 @@ CONTENT-PRESERVATION RULES
 Return only the rewritten text in the structured output field.`;
 }
 
-async function callOpenAI({ mode, text, file }) {
+async function callOpenAI({ mode, text, file, foodNames }) {
   if (!process.env.OPENAI_API_KEY) {
     const err = new Error('OPENAI_API_KEY is missing from the server environment.');
     err.status = 500;
@@ -135,6 +138,9 @@ async function callOpenAI({ mode, text, file }) {
     const mime = mimeFor(file.originalname, file.mimetype);
     const base64 = file.buffer.toString('base64');
     content.push({ type: 'input_file', filename: file.originalname, file_data: `data:${mime};base64,${base64}` });
+  }
+  if (mode === 'menu' && foodNames && foodNames.trim()) {
+    content.push({ type: 'input_text', text: `FOOD NAME(S), ONE PER LINE IN MENU ORDER:\n${foodNames.trim()}` });
   }
   if (text && text.trim()) content.push({ type: 'input_text', text: `USER CONTENT:\n${text.trim()}` });
   if (!content.length) {
@@ -201,6 +207,8 @@ app.post('/api/rewrite', upload.single('file'), async (req, res, next) => {
   try {
     const mode = req.body.mode;
     const text = req.body.text || '';
+    const foodNames = req.body.foodNames || '';
+
     if (!['menu', 'product'].includes(mode)) {
       const err = new Error('Please choose Menu or Food Product.');
       err.status = 400;
@@ -211,12 +219,18 @@ app.post('/api/rewrite', upload.single('file'), async (req, res, next) => {
       err.status = 400;
       throw err;
     }
+    if (mode === 'menu' && !foodNames.trim()) {
+      const err = new Error('Please enter the food name. For multiple foods, enter one name per line.');
+      err.status = 400;
+      throw err;
+    }
     if (mode === 'product' && req.file) {
       const err = new Error('For one food product, please paste the text instead of uploading a file.');
       err.status = 400;
       throw err;
     }
-    const result = await callOpenAI({ mode, text, file: req.file });
+
+    const result = await callOpenAI({ mode, text, file: req.file, foodNames });
     res.json(result);
   } catch (error) { next(error); }
 });
